@@ -1,0 +1,287 @@
+/* 1) Fonts */
+
+/* 2) Tokens (variables) */
+
+:root {
+  --wtt-black: #0a0a0a;
+
+  /* Violet (neon) */
+  --wtt-purple-1: #9b5cff; /* clair */
+  --wtt-purple-2: #8a3ffc; /* foncé */
+  --wtt-purple: #8a3ffc;
+
+  /* Orange (neon) */
+  --wtt-orange-1: #ff7a1a; /* clair */
+  --wtt-orange-2: #ff6a00; /* foncé */
+  --wtt-orange: #ff6a00;
+
+  --wtt-net: #ffffff;
+
+  /* Effets glow (ex: box-shadow) */
+  --glow-purple: drop-shadow(0 0 28px rgba(138, 63, 252, 0.55))
+    drop-shadow(0 0 64px rgba(138, 63, 252, 0.25));
+  --glow-orange: drop-shadow(0 0 28px rgba(255, 106, 0, 0.55))
+    drop-shadow(0 0 64px rgba(255, 106, 0, 0.25));
+  --glow-net: drop-shadow(0 0 18px rgba(255, 255, 255, 0.75));
+  --neon-purple-strong: drop-shadow(0 0 26px rgba(138, 63, 252, 0.9))
+    /* cœur très lumineux */ drop-shadow(0 0 64px rgba(138, 63, 252, 0.65))
+    /* halo proche       */ drop-shadow(0 0 120px rgba(138, 63, 252, 0.4))
+    /* halo moyen        */ drop-shadow(0 0 220px rgba(138, 63, 252, 0.25)); /* halo lointain     */
+
+  --neon-orange-strong: drop-shadow(0 0 26px rgba(255, 106, 0, 0.9))
+    drop-shadow(0 0 64px rgba(255, 106, 0, 0.65))
+    drop-shadow(0 0 120px rgba(255, 106, 0, 0.4))
+    drop-shadow(0 0 220px rgba(255, 106, 0, 0.25));
+
+  --neon-net-strong: drop-shadow(0 0 18px rgba(255, 255, 255, 0.95))
+    drop-shadow(0 0 44px rgba(255, 255, 255, 0.7))
+    drop-shadow(0 0 96px rgba(255, 255, 255, 0.45))
+    drop-shadow(0 0 180px rgba(255, 255, 255, 0.28));
+}
+
+/* 3) Base / Reset */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+  background-color: var(--wtt-black);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  z-index: -1;
+}
+
+.toss-left .orange {
+  --wtt-orange-1: black;
+  filter: none;
+}
+.toss-right .purple {
+  --wtt-purple-1: black;
+  filter: none;
+}
+
+.purple {
+  stroke: var(--wtt-purple-1);
+  filter: var(--neon-purple-strong);
+}
+
+.orange {
+  stroke: var(--wtt-orange-1);
+  filter: var(--neon-orange-strong);
+}
+
+.purple,
+.orange {
+  transition: stroke 0.5s ease, filter 0.5s ease;
+}
+
+.net {
+  stroke: var(--wtt-net);
+  filter: var(--neon-net-strong);
+}
+
+.layout {
+  position: relative;
+}
+
+/* 4) Layout (Grandes zones) */
+.screen {
+  width: 80vw;
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+}
+
+#background {
+  position: absolute;
+  z-index: -2;
+}
+
+.date {
+  position: absolute;
+  top: 85px;
+  left: 150px;
+}
+
+.icon {
+  position: absolute;
+  top: 85px;
+  right: 100px;
+}
+
+.app {
+  height: 100%;
+  display: grid;
+}
+
+.start {
+  grid-template-rows: 20% 20% 60%;
+  width: 60%;
+}
+
+.game {
+  grid-template-rows: 15% 20% 15% 35%;
+  width: 80%;
+}
+
+.matchSelection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+}
+
+.players {
+  display: flex;
+  justify-content: space-around;
+  width: 90%;
+  align-items: center;
+}
+.setReview {
+  display: flex;
+  justify-content: space-around;
+  width: 90%;
+  align-items: center;
+}
+
+.random {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.player {
+  display: flex;
+  flex-direction: column;
+}
+
+.player input {
+  width: 100px;
+}
+
+.layoutToss {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: end;
+}
+
+.stats {
+  /* occupe toute la largeur utile de la zone jeu */
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: 35% 30% 35%;
+  align-items: center;
+  justify-items: center;
+}
+
+.finish {
+  width: 80%;
+  grid-template-rows: 15% 35% 5% 30%;
+}
+
+.resume {
+  display: grid;
+  grid-template-areas:
+    "j1 set1 set2 j2"
+    "score1 set1 set2 score2";
+  align-items: center;
+  justify-items: center;
+}
+.resume-set[data-role="scorePlayerLeft"] {
+  grid-area: set1;
+}
+.resume-set[data-role="scorePlayerRight"] {
+  grid-area: set2;
+}
+
+.set-selection {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.statsMatch {
+  display: flex;
+}
+
+/* container du canvas dans l’écran de fin */
+.finish .chart {
+  min-width: 300px;
+  min-height: 220px;
+  display: grid;
+  place-items: center;
+}
+.finish .chart canvas {
+  width: 100% !important;
+  height: auto !important;
+  max-height: 320px;
+  display: block;
+}
+
+.chrono {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0);
+  z-index: 20;
+}
+
+.modals {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+}
+
+.modal {
+  position: fixed;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: black;
+  width: 300px;
+  border-radius: 20px;
+  box-shadow: 0 0 4px 0 black;
+  padding: 10px;
+  z-index: 30;
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-side {
+  display: flex;
+  align-self: center;
+  justify-content: space-around;
+}
+
+.modal-content h2 {
+  padding-bottom: 20px;
+  text-align: start;
+  justify-self: start;
+}
+
+.is-hidden {
+  display: none;
+}
+
+/* 6) states (états UI, pas d'anim) */
+
+/* 7) Anim */

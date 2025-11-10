@@ -1,0 +1,677 @@
+/* ===============================
+   1) TOKENS (variables thème)
+   =============================== */
+
+:root {
+  --wtt-black: #0a0a0a;
+
+  /* Violet */
+  --wtt-purple-1: #9b5cff;
+  --wtt-purple-2: #8a3ffc;
+  --wtt-purple: #8a3ffc;
+
+  /* Orange */
+  --wtt-orange-1: #ff7a1a;
+  --wtt-orange-2: #ff6a00;
+  --wtt-orange: #ff6a00;
+
+  --wtt-net: #ffffff;
+
+  /* Glow presets (drop-shadow chaînés) */
+  --neon-purple: drop-shadow(0 0 26px rgba(138, 63, 252, 0.9))
+    drop-shadow(0 0 64px rgba(138, 63, 252, 0.65))
+    drop-shadow(0 0 120px rgba(138, 63, 252, 0.4))
+    drop-shadow(0 0 220px rgba(138, 63, 252, 0.25));
+
+  --neon-orange: drop-shadow(0 0 26px rgba(255, 106, 0, 0.9))
+    drop-shadow(0 0 64px rgba(255, 106, 0, 0.65))
+    drop-shadow(0 0 120px rgba(255, 106, 0, 0.4))
+    drop-shadow(0 0 220px rgba(255, 106, 0, 0.25));
+
+  --neon-net: drop-shadow(0 0 18px rgba(255, 255, 255, 0.95))
+    drop-shadow(0 0 44px rgba(255, 255, 255, 0.7))
+    drop-shadow(0 0 96px rgba(255, 255, 255, 0.45))
+    drop-shadow(0 0 180px rgba(255, 255, 255, 0.28));
+}
+
+/* ===============================
+   2) RESET / BASE
+   =============================== */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html,
+body {
+  background: var(--wtt-black);
+  color: #fff;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell,
+    "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol";
+}
+img,
+svg,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+/* utilitaires */
+.is-hidden {
+  display: none !important;
+}
+
+/* ===============================
+   3) LAYERS (z-index map)
+   =============================== */
+/* 0 : background SVG / 10 : UI / 20 : overlay / 30 : modals */
+
+/* ===============================
+   4) ÉCRAN & BACKGROUND SVG
+   =============================== */
+
+.screen {
+  width: min(90vw, 1400px);
+  display: flex;
+  flex-direction: column;
+  margin-inline: auto;
+  position: relative;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: visible;
+  margin-top: 15vh;
+}
+
+#background {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%); /* centre parfait */
+  width: 100%;
+  max-width: 1400px;
+  height: auto;
+  pointer-events: none; /* important: la table ne capte pas les clics */
+  z-index: 0;
+}
+
+/* lignes néon */
+.purple {
+  stroke: var(--wtt-purple-1);
+  filter: var(--neon-purple);
+}
+.orange {
+  stroke: var(--wtt-orange-1);
+  filter: var(--neon-orange);
+}
+.net {
+  stroke: var(--wtt-net);
+  filter: var(--neon-net);
+}
+
+/* swap de couleurs au changement de côté (optionnel)
+   -> ajoute/enlève la classe .swap sur #background en JS */
+#background.swap .purple {
+  stroke: var(--wtt-orange-1);
+  filter: var(--neon-orange);
+}
+#background.swap .orange {
+  stroke: var(--wtt-purple-1);
+  filter: var(--neon-purple);
+}
+
+/* animation toss (tes classes existantes) */
+.toss-left .orange {
+  --wtt-orange-1: black;
+  filter: none;
+}
+.toss-right .purple {
+  --wtt-purple-1: black;
+  filter: none;
+}
+
+/* éléments flottants sur la table */
+
+.head {
+  position: absolute;
+  /* on place la barre un peu au-dessus de la bordure supérieure */
+  top: 1%; /* ~6% de la hauteur de la table : à ajuster à l’œil */
+  left: 0;
+  width: 100%;
+  z-index: 5;
+  pointer-events: none; /* on laisse les enfants décider */
+}
+
+/* date : centre de la moitié violette */
+.head .date {
+  position: absolute;
+  left: 25%; /* centre horizontal de la moitié gauche */
+  transform: translateX(-50%);
+  pointer-events: auto;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.25),
+    0 0 22px rgba(138, 63, 252, 0.25);
+}
+
+/* icône : coin haut droit du terrain */
+.head .icon {
+  position: absolute;
+  right: 10%; /* un peu rentré par rapport au bord orange */
+  top: 0;
+  pointer-events: auto;
+  color: white;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* ===============================
+   5) APPS: start / game / finish
+   =============================== */
+
+.app {
+  display: grid;
+  min-height: 90%;
+  align-content: center;
+  position: relative;
+  z-index: 10;
+}
+
+/* START */
+
+.start {
+  grid-template-rows: 15% 20% 40%;
+  width: 70%;
+  margin-inline: auto;
+}
+
+.matchType {
+  background-color: rgba(90, 90, 90, 0.473);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 12px;
+  padding: 8px 14px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #fff;
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.matchType:hover {
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+.matchType:focus {
+  outline: none;
+  border-color: var(--wtt-purple-1);
+  box-shadow: 0 0 22px rgba(138, 63, 252, 0.6);
+}
+.matchType option {
+  background-color: #111;
+  color: #fff;
+}
+.matchSelection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+
+.players-start {
+  display: flex;
+  align-items: start;
+  justify-content: space-around;
+  width: 100%;
+}
+.player {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.player input {
+  width: 250px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  text-align: center;
+  font-size: 2rem;
+}
+
+/* bouton “pile ou face” + lancer */
+
+.layoutToss {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 10%;
+  gap: 12px;
+}
+
+.btn--toss {
+  background-color: rgba(90, 90, 90, 0.473);
+  backdrop-filter: blur(6px);
+  border: none;
+  padding: 10px 18px;
+  border-radius: 16px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+  box-shadow: 0 0 16px rgba(138, 63, 252, 0.35),
+    0 0 32px rgba(255, 106, 0, 0.35);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.btn--toss:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 24px rgba(255, 106, 0, 0.45),
+    0 0 48px rgba(138, 63, 252, 0.45);
+}
+.btn--toss:active {
+  transform: translateY(0);
+  box-shadow: 0 0 12px rgba(255, 106, 0, 0.25),
+    0 0 24px rgba(138, 63, 252, 0.25);
+}
+
+.lancer {
+  background: linear-gradient(90deg, var(--wtt-purple-2), var(--wtt-orange-2));
+  border: none;
+  padding: 10px 18px;
+  border-radius: 16px;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+  box-shadow: 0 0 16px rgba(138, 63, 252, 0.35),
+    0 0 32px rgba(255, 106, 0, 0.35);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.lancer:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 24px rgba(255, 106, 0, 0.45),
+    0 0 48px rgba(138, 63, 252, 0.45);
+}
+.lancer:active {
+  transform: translateY(0);
+  box-shadow: 0 0 12px rgba(255, 106, 0, 0.25),
+    0 0 24px rgba(138, 63, 252, 0.25);
+}
+
+/* GAME */
+.game {
+  grid-template-rows: 15% 20% 15% 35%;
+  width: min(90%, 1100px);
+  margin-inline: auto;
+  position: relative;
+}
+.chrono {
+  font-variant-numeric: tabular-nums;
+  font-size: 1.4rem;
+  font-weight: 700;
+  place-self: center;
+  position: absolute;
+  top: -35px;
+}
+.players-game {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.player {
+  width: 250px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: #fff;
+  text-align: center;
+}
+
+.nbService {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 30px;
+}
+.service {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+}
+.tt-ball {
+  color: #fff;
+}
+
+.score,
+.set {
+  font-size: 3rem;
+  font-weight: 800;
+  min-width: 60px;
+  text-align: center;
+}
+
+.setReview {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+}
+
+.point {
+  background-color: rgba(90, 90, 90, 0.473);
+  backdrop-filter: blur(6px);
+  border: none;
+  padding: 10px 18px;
+  border-radius: 16px;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+  box-shadow: 0 0 16px rgba(138, 63, 252, 0.35),
+    0 0 32px rgba(255, 106, 0, 0.35);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.point:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 24px rgba(255, 106, 0, 0.45),
+    0 0 48px rgba(138, 63, 252, 0.45);
+}
+.point:active {
+  transform: translateY(0);
+  box-shadow: 0 0 12px rgba(255, 106, 0, 0.25),
+    0 0 24px rgba(138, 63, 252, 0.25);
+}
+
+.set {
+  font-size: 1.6rem;
+}
+
+.stats {
+  /* occupe toute la largeur utile de la zone jeu */
+  padding: 16px 12px;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 5% 35% 5%;
+  justify-content: center;
+  margin-top: 3vh;
+  place-items: center;
+  min-height: 220px;
+}
+
+.table {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 14px;
+  backdrop-filter: blur(4px);
+  display: grid;
+  grid-auto-rows: 52px;
+  row-gap: 12px;
+  align-content: center;
+}
+
+#tablePlayer1 > div,
+#tablePlayer2 > div {
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 1.6rem;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+}
+
+#nameStat > div {
+  display: grid;
+  background: rgba(54, 54, 54, 0.562);
+  place-items: center;
+  text-align: center;
+  line-height: 1.2;
+  font-size: 1.2rem;
+  padding: 8px 6px;
+  color: #e6e6e6;
+  font-weight: 600;
+}
+
+/* glow léger côté */
+#tablePlayer1 > div {
+  box-shadow: 0 0 14px rgba(138, 63, 252, 0.25);
+}
+#tablePlayer2 > div {
+  box-shadow: 0 0 14px rgba(255, 106, 0, 0.25);
+}
+
+/* FINISH */
+
+.finish {
+  min-width: 80%;
+  margin-inline: auto;
+  grid-template-rows: 38% 4% 40%;
+}
+
+.resume {
+  display: grid;
+  grid-template-areas:
+    "j1 set1 set2 j2"
+    "score1 set1 set2 score2";
+  align-items: center;
+  justify-items: center;
+  gap: 0.5rem;
+  text-align: center;
+  justify-content: space-evenly;
+}
+.resume-set[data-role="scorePlayerLeft"] {
+  grid-area: set1;
+}
+.resume-set[data-role="scorePlayerRight"] {
+  grid-area: set2;
+}
+
+.resume-set {
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.set-score {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
+  padding: 4px 12px;
+  border-radius: 10px;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(6px);
+  min-width: 40px;
+  text-align: center;
+}
+
+.set-win-right {
+  color: var(--wtt-orange-1);
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.set-win-left {
+  color: var(--wtt-purple-1);
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.set-finish {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #ddd;
+}
+
+.set-left {
+  color: var(--wtt-purple-1);
+  font-size: 3rem;
+}
+
+.set-right {
+  color: var(--wtt-orange-1);
+
+  font-size: 3rem;
+}
+
+.set-selection {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 2rem;
+}
+.set-selection button {
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+.set-selection button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.statsMatch {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  align-items: center;
+  justify-content: center;
+}
+
+/* bloc du graphe */
+.finish .chart {
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 16px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 0 28px rgba(138, 63, 252, 0.15),
+    0 0 42px rgba(255, 106, 0, 0.15);
+}
+
+.finish .chart canvas {
+  height: auto !important;
+  max-height: 360px;
+  display: block;
+}
+
+.statsMatch .stats {
+  grid-template-columns: 5% 60% 5%;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+
+/* ===============================
+   7) MODALES
+   =============================== */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35); /* léger assombrissement */
+  z-index: 20;
+  pointer-events: auto; /* on laisse les modals capter les clics */
+}
+
+.modals {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 30;
+}
+
+.modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  z-index: 30;
+}
+.modal > .modal-content {
+  background: #000;
+  color: #fff;
+  width: min(90vw, 380px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  padding: 16px 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.modal-content h2 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+/* boutons dans modale */
+.modalButton,
+.button {
+  cursor: pointer;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-weight: 700;
+  transition: transform 0.06s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+.modalButton:hover,
+.button:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
+}
+.modalButton:active,
+.button:active {
+  transform: translateY(0);
+}
+
+/* variantes optionnelles (si tu veux) */
+.btn--purple {
+  background: var(--wtt-purple-2);
+  box-shadow: 0 0 18px rgba(138, 63, 252, 0.45);
+}
+.btn--orange {
+  background: var(--wtt-orange-2);
+  box-shadow: 0 0 18px rgba(255, 106, 0, 0.45);
+}
+.btn--purple:hover {
+  background: var(--wtt-purple-1);
+}
+.btn--orange:hover {
+  background: var(--wtt-orange-1);
+}
+
+.modal-side {
+  display: flex;
+  align-self: center;
+  justify-content: space-around;
+}
+
+/* 6) states (états UI, pas d'anim) */
+
+/* 7) Anim */
