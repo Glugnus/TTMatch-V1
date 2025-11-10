@@ -590,7 +590,7 @@ canvas {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.35); /* léger assombrissement */
-  z-index: 20;
+  z-index: 35;
   pointer-events: auto; /* on laisse les modals capter les clics */
 }
 
@@ -601,6 +601,7 @@ canvas {
   justify-content: center;
   align-items: center;
   z-index: 30;
+  pointer-events: none;
 }
 
 .modal {
@@ -608,7 +609,7 @@ canvas {
   align-items: center;
   justify-content: center;
   pointer-events: auto;
-  z-index: 30;
+  z-index: 40;
 }
 .modal > .modal-content {
   background: #000;
